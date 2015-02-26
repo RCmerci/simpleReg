@@ -47,20 +47,11 @@ D -> char
 
 
 (* util functions below *)
-type twoEntry = (In of ) * Out
-type regObj = Concat of char | 
-  
-let orLink 
-
-
-
-
-
-
-
-
-
-
+type edge = Ch of char | Nil
+type obj  = Cat of obj * edge * obj
+	  | Or of obj * obj * obj * obj
+	  | Star of obj * obj * obj
+	  | NilObj
 (*   util functions above *)
 open Lex
 
