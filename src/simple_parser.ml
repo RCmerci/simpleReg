@@ -87,17 +87,17 @@ let rec par (lObj:lexObj) (nd:node): lexObj*node =
   match lVal with
     (* (6, 2) *)
     Meta '(' -> begin
-      let () = print_string " ( " in
+      (* let () = print_string " ( " in *)
       let (retObj, retNd) = !rep newlObj nd in
       let (lVal2, newlObj3) = slex_flush retObj in
       if lVal2 = Meta ')' then begin
-	  print_string " ) ";
+	  (* print_string " ) "; *)
 	  (newlObj3, retNd)
 	end 
       else raise (ParseError "[par]")
     end
   | Id char -> begin
-      Printf.printf " %c " char;
+      (* Printf.printf " %c " char; *)
       (newlObj, (Cat (NilNode, Ch char, NilNode)))
     end
   | _ -> raise (ParseError "[par]")
@@ -114,7 +114,7 @@ let rec star' (lObj:lexObj) (nd:node): lexObj*node =
   | Id _ -> (lObj, nd)
   (* (5, 1) *)
   | Meta '*' -> begin
-      print_string " * ";
+      (* print_string " * "; *)
       star' newlObj (Star nd)
     end
   | _ -> raise (ParseError "[star']")
@@ -165,7 +165,7 @@ let rec rep' (lObj:lexObj) (nd:node): lexObj*node =
   match lVal with
     (* (1, 0) *)
     Meta '|' -> begin
-      let () = print_string " | " in
+      (* let () = print_string " | " in *)
       let (retObj, retNd) = catAndStar newlObj NilNode in
       rep' retObj (Or (retNd, nd))
     end
@@ -194,7 +194,7 @@ let rec theEnd (lObj:lexObj) (nd:node) : lexObj*node =
   let (lVal, newlObj) = slex_flush lObj in
   match lVal with
     Meta '$' -> begin
-      print_string " $ ";
+      (* print_string " $ "; *)
       (newlObj, nd)
       (* raise Acc *)
     end

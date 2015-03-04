@@ -16,5 +16,5 @@ lex.cmo: lex.ml lex.mli
 clean:
 	-rm *.cm*
 
-clean_all: clean
+cleanall: clean
 	-rm test
