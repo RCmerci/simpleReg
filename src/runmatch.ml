@@ -45,7 +45,14 @@ let _ = if debug = false then print_node:= (fun a -> ())
 (* ------------------------------------------------------- *)
 			     
 let run str (n:node) =
-  let rec aux ?info str n : string =
+  let rec nextP n =
+    match n with
+      Cat (n1, e, n2) -> (e, n2)
+    | Or (n1, n2) -> (NilCh, n2)
+    | Star n1 -> nextP n1
+    | NilNode -> (NilCh, NilNode)
+  in
+  let rec aux ?(info:edge * node) str n : string =
     match n with
       Or (n1, n2) -> 
       let res_of_n1 = try String.length (aux str n1) with
@@ -71,12 +78,32 @@ let run str (n:node) =
       | NilCh -> 
 	 aux substr1 n2
     )
-    | Star n1 -> 
-       let substr = 
-	 try aux str n1 with
-	   InnerErr linen -> str in
-       if str = substr then substr
-       else aux substr n
+    | Star n1 -> (
+      (* [info] is the next node combined with a `edge` after current `Star` node*)
+      let infoP = 
+	match info with
+	  None -> failwith "[info] should not be [None]"
+	| Some a -> a
+      in
+      match infoP with
+	(Nilch, infoN) -> begin
+	  let l = try String.length (aux ~info:(nextP infoN) str infoN) with
+		    InnerErr _ -> -1 in
+	  match l with
+	    -1 -> begin
+	      let substr1 = aux ~info:infoP str n1  in
+	      aux substr1 (Star n1) ~info:infoP
+	    end
+	  | 0 -> ""
+	  | len -> 
+	end
+    )
+       
+       (* let substr =  *)
+       (* 	 try aux str n1 with *)
+       (* 	   InnerErr linen -> str in *)
+       (* if str = substr then substr *)
+       (* else aux substr n *)
     | NilNode -> str
   in
   let substr =
